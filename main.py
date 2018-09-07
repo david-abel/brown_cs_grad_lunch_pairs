@@ -41,10 +41,9 @@ def main():
 	prev_file_name, next_file_name = get_next_file_name(file_name_base)
 
 	# Populate.
-	students = populate.populate()
-	mp.save_students(students, file_name="fall_2018_members_0.txt")
-	sys.exit(1)
-
+	# students = populate.populate()
+	# mp.save_students(students, file_name="fall_2018_members_0.txt")
+	# sys.exit(1)
 
 
 	# Load.
@@ -54,7 +53,7 @@ def main():
 	pairs, updated_student_list = mp.make_new_pairs(student_list)
 
 	# Save new list.
-	mp.save_students(updated_student_list, file_name=next_file_name)
+	# mp.save_students(updated_student_list, file_name=next_file_name)
 
 	# Show pairings.
 	print

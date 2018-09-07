@@ -6,6 +6,9 @@ class Student(object):
 		self.area = area
 		self.previous_partners = previous_partners if previous_partners is not None else []
 
+	def get_area(self):
+		return self.area
+
 	def get_name(self):
 		return self.email.split("@")[0]
 
@@ -18,9 +21,7 @@ class Student(object):
 			print "Warning: trying to add already existing partner (" + new_partner.get_name() + ") to " + self.name + "."
 			return
 
-		print "B", len(self.previous_partners)
 		self.previous_partners.append(new_partner.get_name())
-		print "A", len(self.previous_partners)
 
 	def is_past_partner(self, other_student):
 		'''

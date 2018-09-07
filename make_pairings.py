@@ -73,11 +73,16 @@ def make_new_pairs(list_of_students):
 
 		# Grab random new partner.
 		possible_partners = [x for x in list_of_students if x != student and not student.is_past_partner(x)]
+		possible_diff_area_partners = [x for x in possible_partners if x.get_area() != student.get_area()]
+		
 		if len(possible_partners) == 0:
 			# All out of partners.
 			raise ValueError("No possible partners remain.")
 
-		partner = random.choice(possible_partners)
+		if len(possible_diff_area_partners) > 0:
+			partner = random.choice(possible_diff_area_partners)
+		else:
+			partner = random.choice(possible_partners)
 
 		# Make pairing.
 		pairings[student] = partner
