@@ -49,36 +49,49 @@ def save_students(list_of_student_objects, file_name="members.txt"):
 # == Make Pairs ==
 # ================
 
-def make_new_pairs(list_of_students):
+def make_new_pairs(list_of_students, absent_list=[]):
 	'''
 	Args:
 		list_of_students (list)
+		absent_list (list)
 
 	Returns:
 		(dict): Key=student, Val=student
 		(list)
 	'''
 
-
+	# Setup data structures.
 	pairings = {}
 	new_student_list = []
 	random.shuffle(list_of_students)
+	active_students = [s for s in list_of_students if s.get_email() not in absent_list]
+	all_students = list_of_students[:]
+	need_partners = []
 
+	# Make pairings.
+	for student in all_students:
 
-	for student in list_of_students:
+		if student.get_email() in absent_list:
+			# Student in absent list.
+			new_student_list.append(student)
+			continue
 
 		if student in new_student_list:
 			# Already handled this student.
 			continue
 
-		# Grab random new partner.
-		possible_partners = [x for x in list_of_students if x != student and not student.is_past_partner(x)]
+		# Grab all possible partners.
+		possible_partners = [x for x in active_students if x != student and not student.is_past_partner(x)]
+		
+		# Grab possible partners from different area.
 		possible_diff_area_partners = [x for x in possible_partners if x.get_area() != student.get_area()]
 		
 		if len(possible_partners) == 0:
 			# All out of partners.
-			raise ValueError("No possible partners remain.")
+			need_partners.append(student)
+			continue
 
+		# Choose new partner, prioritizing diff area.
 		if len(possible_diff_area_partners) > 0:
 			partner = random.choice(possible_diff_area_partners)
 		else:
@@ -95,8 +108,27 @@ def make_new_pairs(list_of_students):
 		new_student_list.append(partner)
 
 		# Remove.
-		list_of_students.remove(student)
-		list_of_students.remove(partner)
+		active_students.remove(student)
+		active_students.remove(partner)
+
+	if len(need_partners) > 0:
+		extra_student = need_partners[0]
+		temp_student = random.choice(new_student_list)
+		other_temp_student = pairings[temp_student]
+		new_student_list.remove(temp_student)
+		new_student_list.remove(other_temp_student)
+
+		# Make trio.
+		pairings[extra_student] = [temp_student, other_temp_student]
+		extra_student.add_partner(temp_student)
+		extra_student.add_partner(other_temp_student)
+		pairings[temp_student] = [extra_student, other_temp_student]
+		temp_student.add_partner(extra_student)
+		pairings[other_temp_student] = [extra_student, temp_student]
+		other_temp_student.add_partner(extra_student)
+		new_student_list.append(extra_student)
+		new_student_list.append(temp_student)
+		new_student_list.append(other_temp_student)
 
 	return pairings, new_student_list
 

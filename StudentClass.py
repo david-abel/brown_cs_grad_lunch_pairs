@@ -6,6 +6,9 @@ class Student(object):
 		self.area = area
 		self.previous_partners = previous_partners if previous_partners is not None else []
 
+	def get_email(self):
+		return self.email
+
 	def get_area(self):
 		return self.area
 

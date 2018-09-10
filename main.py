@@ -6,7 +6,6 @@ import sys
 import make_pairings as mp
 import populate
 
-
 def get_next_file_name(file_name_base):
 	'''
 	Args:
@@ -37,6 +36,8 @@ def get_next_file_name(file_name_base):
 
 def main():
 
+	absent_list = ["david_abel@brown.edu"]
+
 	file_name_base = "fall_2018_members"
 	prev_file_name, next_file_name = get_next_file_name(file_name_base)
 
@@ -45,20 +46,21 @@ def main():
 	# mp.save_students(students, file_name="fall_2018_members_0.txt")
 	# sys.exit(1)
 
-
 	# Load.
 	student_list = mp.load_existing_students(file_name=prev_file_name)
 
 	# Make new pairs.
-	pairs, updated_student_list = mp.make_new_pairs(student_list)
+	pairs, updated_student_list = mp.make_new_pairs(student_list, absent_list)
 
 	# Save new list.
-	# mp.save_students(updated_student_list, file_name=next_file_name)
+	mp.save_students(updated_student_list, file_name=next_file_name)
 
-	# Show pairings.
-	print
-	for k in pairs.keys():
-		print k.get_name(), pairs[k].get_name()
+	# Show pairings, formatted for HTML.
+	for k in sorted(pairs.keys(), key=lambda x: x.get_name()):
+		if type(pairs[k]) == list:
+			print "<tr><td>" + k.get_name() + "</td><td>" + pairs[k][0].get_name() + "</td><td>" + pairs[k][1].get_name() + "</td></tr>"
+		else:
+			print "<tr><td>" + k.get_name() + "</td><td>" + pairs[k].get_name() + "</td></tr>"
 
 
 if __name__ == "__main__":
